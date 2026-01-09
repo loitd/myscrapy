@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>LNDD - Main View</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0b0e14; color: #d1d5db; }
+        .grid-cell { background-color: #1a1f29; border: 1px solid #2d3748; }
+        .pillar-line { height: 1px; background-color: #4a5568; width: 24px; margin: 4px 0; }
+    </style>
+</head>
+<body class="p-6 flex flex-col items-center">
+    <div class="max-w-2xl w-full text-center">
+        <h1 class="text-3xl font-bold text-blue-500 mb-2 uppercase tracking-widest">LNĐĐ</h1>
+        <p class="text-yellow-600 font-bold mb-8">Ngày {{res.can_d}} {{res.chi_d}}, Nguyệt tướng {{res.nt}}, giờ {{res.gio}}</p>
+
+        <div class="grid grid-cols-4 gap-1 bg-gray-900 p-1 rounded-xl shadow-2xl">
+            {% set layout = ['Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Thìn', 'c', 'c', 'Dậu', 'Mão', 'c', 'c', 'Tuất', 'Dần', 'Sửu', 'Tý', 'Hợi'] %}
+            {% for p in layout %}
+                {% if p == 'c' %}
+                    {% if loop.index == 6 %}
+                    <div class="col-span-2 row-span-2 bg-black flex flex-col justify-around py-6 border border-gray-800">
+                        <div class="flex justify-around items-center px-4">
+                            {% for thien, dia in res.tu_khoa %}
+                            <div class="flex flex-col items-center">
+                                <span class="text-white font-medium text-sm">{{thien}}</span>
+                                <div class="pillar-line"></div>
+                                <span class="text-white font-medium text-sm">{{dia}}</span>
+                                <span class="text-[8px] text-gray-600 mt-1 uppercase">Khóa {{1+loop.index0}}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="flex justify-center gap-8 border-t border-gray-800 pt-6">
+                            {% for item in res.tam_truyen %}
+                            <div class="text-center">
+                                <div class="text-orange-500 font-extrabold text-3xl leading-none">{{item.chi}}</div>
+                                <div class="text-[11px] font-bold text-gray-300 mt-2">{{item.lt}}</div>
+                                <div class="text-[10px] text-gray-500 uppercase font-medium">{{item.tt}}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="grid-cell aspect-square flex flex-col items-center justify-center relative">
+                        <span class="text-white font-bold text-2xl">{{res.thien_ban[p]}}</span>
+                        <span class="text-[10px] text-gray-500 font-medium">{{res.thien_tuong[res.thien_ban[p]]}}</span>
+                        <span class="absolute bottom-1 right-1 text-[10px] text-white-700 font-black">{{p}}</span> <!-- Chỗ này in địa bàn ở góc phải của ô/hào --> 
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <form method="POST" class="mt-10 bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-lg">
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <label class="text-sm font-bold text-gray-400">CHỌN NGÀY GIỜ DƯƠNG LỊCH:</label>
+                <input type="datetime-local" name="dt" value="{{dt}}" class="bg-gray-800 text-white p-3 rounded-xl border border-gray-700 outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 active:scale-95 transition">XEM QUẺ</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

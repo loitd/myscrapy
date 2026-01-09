@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>LNĐĐ - Forensic View</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0b0e14; color: #d1d5db; font-family: sans-serif; }
+        .grid-cell { background-color: #1a1f29; border: 1px solid #2d3748; }
+        .pillar-line { height: 1px; background-color: #4a5568; width: 24px; margin: 4px 0; }
+        /* Hiệu ứng hào bị Tuần Không */
+        .void-text { color: #ef4444; font-size: 8px; font-weight: bold; }
+        /* Màu nhấn mạnh cho Can Chi ngày */
+        .highlight-heaven { color: #fbbf24; } /* Vàng sáng (Thiên bàn) */
+        .highlight-earth { color: #d97706; font-weight: 900; } /* Vàng đậm (Địa bàn) */
+    </style>
+</head>
+<body class="p-6 flex flex-col items-center">
+    <div class="max-w-2xl w-full text-center">
+        <h1 class="text-3xl font-bold text-blue-500 mb-2 uppercase tracking-widest underline decoration-1 underline-offset-8">
+            {{res.ten_khoa}}
+        </h1>
+        
+        <p class="text-yellow-600 font-bold mb-8 italic">
+            Ngày {{res.can_d}} {{res.chi_d}} — Nguyệt tướng {{res.nt}} — Giờ {{res.gio}}
+        </p>
+
+        <div class="grid grid-cols-4 gap-1 bg-gray-900 p-1 rounded-xl shadow-2xl">
+            {% set layout = ['Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Thìn', 'c', 'c', 'Dậu', 'Mão', 'c', 'c', 'Tuất', 'Dần', 'Sửu', 'Tý', 'Hợi'] %}
+            {% for p in layout %}
+                {% if p == 'c' %}
+                    {% if loop.index == 6 %}
+                    <div class="col-span-2 row-span-2 bg-black flex flex-col justify-around py-6 border border-gray-800">
+                        <div class="flex justify-around items-center px-4">
+                            {% for thien, dia in res.tu_khoa %}
+                            <div class="flex flex-col items-center">
+                                <span class="text-blue-400 font-bold text-base">{{thien}}</span>
+                                <div class="pillar-line"></div>
+                                <span class="text-white font-medium text-sm">{{dia}}</span>
+                                <span class="text-[8px] text-gray-600 mt-1 uppercase">Khóa {{loop.index}}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="flex justify-center gap-8 border-t border-gray-800 pt-6">
+                            {% for item in res.tam_truyen %}
+                            <div class="text-center">
+                                <div class="text-orange-500 font-extrabold text-3xl leading-none">
+                                    {{item.chi}}
+                                    {% if item.is_khong %}<div class="void-text">TUẦN KHÔNG</div>{% endif %}
+                                </div>
+                                <div class="text-[11px] font-bold text-gray-300 mt-2">{{item.lt}}</div>
+                                <div class="text-[10px] text-gray-500 uppercase font-medium">{{item.tt}}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="grid-cell aspect-square flex flex-col items-center justify-center relative">
+                        <span class="text-2xl font-bold {% if res.thien_ban[p] == res.chi_d %}highlight-heaven{% else %}text-white{% endif %}">
+                            {{res.thien_ban[p]}}
+                        </span>
+                        
+                        <span class="text-[10px] text-gray-500 font-medium">{{res.thien_tuong[res.thien_ban[p]]}}</span>
+                        
+                        <span class="absolute bottom-1 right-1 text-[10px] font-black 
+                            {% if p == res.chi_d or p == res.ck %}highlight-earth{% else %}text-white-700{% endif %}">
+                            {{p}}
+                        </span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="mt-8 bg-gray-900 p-6 rounded-2xl border border-gray-800 text-left shadow-lg">
+            <h2 class="text-blue-400 font-bold uppercase text-sm mb-4 border-b border-gray-800 pb-2">Lời phán</h2>
+            <div class="space-y-3">
+                {% for p in res.loi_phan %}
+                <p class="text-gray-300 text-sm leading-relaxed flex gap-2">
+                    <span class="text-orange-500">▶</span> {{p}}
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <form method="POST" class="mt-8 bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-lg">
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <input type="datetime-local" name="dt" value="{{dt}}" class="bg-gray-800 text-white p-3 rounded-xl border border-gray-700 outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition">XEM</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
